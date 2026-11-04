@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider, RequireAuth, ADMIN_ROLES } from './auth';
 import { ToastProvider } from './components/ui';
+import { ThemeProvider } from './theme';
 import Layout from './components/Layout';
 import { LoginPage, RegisterPage } from './pages/AuthPages';
 import { CitizenDashboard, MyLand, SearchRecords, MutationApply, RevenuePay, CertificatesPage, SurveysPage, ComplaintsPage, NotificationsPage, ProfilePage } from './pages/Citizen';
@@ -10,7 +11,7 @@ import { SurveysAdmin, CertificatesAdmin, ComplaintsAdmin, UsersAdmin, MastersAd
 function Shell({ children }: { children: React.ReactNode }) { return <Layout>{children}</Layout>; }
 export default function App() {
   return (
-    <ToastProvider><AuthProvider><BrowserRouter>
+    <ThemeProvider><ToastProvider><AuthProvider><BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -39,6 +40,6 @@ export default function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </BrowserRouter></AuthProvider></ToastProvider>
+    </BrowserRouter></AuthProvider></ToastProvider></ThemeProvider>
   );
 }

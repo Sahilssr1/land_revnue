@@ -40,7 +40,7 @@ export function ComplaintsAdmin() {
   const toast = useToast(); const [rows, setRows] = useState(d.complaints); const [remark, setRemark] = useState(''); const [selected, setSelected] = useState<typeof d.complaints[number] | null>(null);
   return (
     <Page title="Complaint & Dispute Management" icon={AlertTriangle} subtitle="Assign officers, add remarks and track resolutions.">
-      <Card className="mb-4 p-5"><h3 className="mb-3 font-bold tracking-tight text-navy">Land disputes</h3>{d.disputes.map((x) => <p key={x.id} className="text-sm">{x.caseNo} — {x.parties} · Land {x.landId} · <Badge status={x.status} /></p>)}</Card>
+      <Card className="mb-4 p-5"><h3 className="mb-3 font-bold tracking-tight text-navy dark:text-white">Land disputes</h3>{d.disputes.map((x) => <p key={x.id} className="text-sm">{x.caseNo} — {x.parties} · Land {x.landId} · <Badge status={x.status} /></p>)}</Card>
       <Card><DataTable columns={[
         { key: 'subject', label: 'Subject' }, { key: 'citizen', label: 'Citizen' }, { key: 'officer', label: 'Officer' },
         { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> },
@@ -69,7 +69,7 @@ export function UsersAdmin() {
         { key: 'active', label: 'Status', render: (r) => <Badge status={r.active ? 'Approved' : 'Rejected'} /> },
         { key: 'id', label: 'Actions', render: (r) => <Button variant={r.active ? 'danger' : 'primary'} onClick={async () => { await api.action(`/api/admin/users/${String(r.id)}/${r.active ? 'deactivate' : 'activate'}`, {}); setRows((x) => x.map((y) => y.id === r.id ? { ...y, active: !y.active } : y)); toast(`Account ${r.active ? 'deactivated' : 'activated'}`, 'success'); }}>{r.active ? 'Deactivate' : 'Activate'}</Button> },
       ]} rows={rows as never[]} /></Card>
-      <p className="mt-3 text-sm text-slate-500">Roles: SuperAdmin, DistrictOfficer, CircleOfficer, RevenueEmployee, Amin, Citizen — enforced server-side via role checks on every endpoint.</p>
+      <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Roles: SuperAdmin, DistrictOfficer, CircleOfficer, RevenueEmployee, Amin, Citizen — enforced server-side via role checks on every endpoint.</p>
       <Modal open={show} title="Create employee account" onClose={() => setShow(false)}>
         <form className="space-y-3" onSubmit={async (e) => { e.preventDefault(); await api.action('/api/admin/users', form); setRows((r) => [...r, { id: `U-${r.length + 1}`, ...form, active: true }]); setShow(false); toast('Employee account created', 'success'); }}>
           <Field label="Name"><Input required value={form.name} onChange={setF('name')} /></Field>
@@ -86,12 +86,12 @@ export function MastersAdmin() {
   return (
     <Page title="Masters — Districts, Circles, Blocks & Villages" icon={Database} subtitle="Reference data for districts, circles, mauzas and villages.">
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Districts</h3>{d.masters.districts.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
-        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Circles</h3>{Object.entries(d.masters.circles).map(([k, v]) => <p key={k} className="border-b py-1 text-sm">{k}: {(v as string[]).join(', ')}</p>)}</Card>
-        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Mauzas</h3>{d.masters.mauzas.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
-        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Villages</h3>{d.masters.villages.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy dark:text-white">Districts</h3>{d.masters.districts.map((x) => <p key={x} className="border-b py-1 text-sm dark:border-white/10">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy dark:text-white">Circles</h3>{Object.entries(d.masters.circles).map(([k, v]) => <p key={k} className="border-b py-1 text-sm dark:border-white/10">{k}: {(v as string[]).join(', ')}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy dark:text-white">Mauzas</h3>{d.masters.mauzas.map((x) => <p key={x} className="border-b py-1 text-sm dark:border-white/10">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy dark:text-white">Villages</h3>{d.masters.villages.map((x) => <p key={x} className="border-b py-1 text-sm dark:border-white/10">{x}</p>)}</Card>
       </div>
-      <p className="mt-3 text-sm text-slate-500">Master CRUD calls /api/admin/masters on the live API; demo view is read-only seed data.</p>
+      <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Master CRUD calls /api/admin/masters on the live API; demo view is read-only seed data.</p>
     </Page>
   );
 }
@@ -104,11 +104,11 @@ export function ReportsAdmin() {
   };
   return (
     <Page title="Reports & Analytics" icon={BarChart3} subtitle="District, revenue, mutation, ownership, survey and employee reports.">
-      {err && <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{err}</div>}
+      {err && <div className="mb-4 rounded-lg border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">{err}</div>}
       <div className="grid gap-4 md:grid-cols-2">{kinds.map(([k, label]) => (
         <Card key={k} className="flex flex-wrap items-center justify-between gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"><p className="font-semibold">{label}</p><span className="flex gap-2"><Button variant="secondary" onClick={() => run(k, 'pdf')}><Download size={16} aria-hidden="true" />Export PDF</Button><Button variant="secondary" onClick={() => run(k, 'xlsx')}><Download size={16} aria-hidden="true" />Export Excel</Button></span></Card>
       ))}</div>
-      <p className="mt-4 text-sm text-slate-500">Exports call /api/reports/&lt;kind&gt;?format=pdf|xlsx. If the API is offline, exports fail gracefully with the message above and no fake file is produced. Total revenue (demo): {fmtINR(d.adminStats.revenueCollected)}.</p>
+      <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">Exports call /api/reports/&lt;kind&gt;?format=pdf|xlsx. If the API is offline, exports fail gracefully with the message above and no fake file is produced. Total revenue (demo): {fmtINR(d.adminStats.revenueCollected)}.</p>
     </Page>
   );
 }
@@ -118,7 +118,7 @@ export function AuditLogsAdmin() {
       <Card><DataTable columns={[
         { key: 'user', label: 'User' }, { key: 'action', label: 'Action' }, { key: 'target', label: 'Target' }, { key: 'date', label: 'Date & time' },
       ]} rows={d.auditLogs as never[]} /></Card>
-      <p className="mt-3 text-sm text-slate-500">Every admin action is audit-logged server-side in production (AuditLogs table).</p>
+      <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Every admin action is audit-logged server-side in production (AuditLogs table).</p>
     </Page>
   );
 }

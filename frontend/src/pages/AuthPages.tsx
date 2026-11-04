@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Award, Database, FileText, IndianRupee, Landmark, Lock, LogIn, Search, ShieldCheck, Users } from 'lucide-react';
+import { Award, Database, FileText, IndianRupee, Landmark, Lock, LogIn, Moon, Search, ShieldCheck, Sun, Users } from 'lucide-react';
 import { useAuth } from '../auth';
 import { Button, Card, Field, Input, useToast } from '../components/ui';
+import { useTheme } from '../theme';
 import { LandArt } from '../components/illustrations';
 import { api } from '../services/api';
 
@@ -10,6 +11,7 @@ import { api } from '../services/api';
 // Desktop: gradient illustration panel + sign-in card. Mobile: the panel
 // collapses to a compact banner above the card.
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
+  const { theme, toggle } = useTheme();
   const chips = [
     { icon: ShieldCheck, label: 'Secure sign-in' },
     { icon: Lock, label: 'JWT-protected sessions' },
@@ -28,9 +30,9 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
     { icon: Award, label: 'Track every application', tile: 'bg-sky-400' },
   ];
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#eef4f1] lg:grid lg:grid-cols-[1.05fr_1fr]">
+    <div className="min-h-screen overflow-x-hidden bg-[#eef4f1] dark:bg-[#070b14] lg:grid lg:grid-cols-[1.05fr_1fr]">
       <div className="flex items-center gap-3 bg-[#0b2447] px-5 py-4 text-white lg:hidden" style={{ background: 'linear-gradient(90deg, #040f1e, #0b2447 60%, #0f766e)' }}>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" aria-hidden="true" /></span>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft sm:h-9 sm:w-9 sm:rounded-xl"><Landmark size={17} className="text-white" aria-hidden="true" /></span>
         <div><p className="font-bold tracking-tight text-white">LRMS</p><p className="text-xs text-teal-100">Land records, mutations & revenue — in one place</p></div>
       </div>
       <div className="relative hidden overflow-hidden bg-[#040f1e] p-10 text-white lg:flex lg:flex-col lg:justify-between" style={panelStyle}>
@@ -58,13 +60,16 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
         </div>
       </div>
       <div className="relative flex items-center justify-center overflow-hidden px-4 py-6 sm:p-6">
-        <div aria-hidden="true" className="pointer-events-none absolute -left-16 top-10 h-64 w-64 rounded-full bg-teal-300/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-16 bottom-10 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-24 w-24 rounded-full bg-amber-300/40 blur-2xl" />
-        <Card className="animate-modal-in relative w-full max-w-md overflow-hidden p-5 shadow-lift ring-1 ring-teal-100 sm:p-6">
+        <div aria-hidden="true" className="pointer-events-none absolute -left-16 top-10 h-64 w-64 rounded-full bg-teal-300/30 blur-3xl dark:bg-teal-500/20" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 bottom-10 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl dark:bg-sky-500/20" />
+        <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-24 w-24 rounded-full bg-amber-300/40 blur-2xl dark:bg-amber-500/20" />
+        <Card className="animate-modal-in relative w-full max-w-md overflow-hidden p-5 shadow-lift ring-1 ring-teal-100 dark:ring-white/10 sm:p-6">
           <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-teal-400 via-navy to-amber-400" />
-          <div className="mb-4 flex items-center gap-2.5 text-navy"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" aria-hidden="true" /></span><h1 className="text-xl font-bold tracking-tight">LRMS</h1></div>
-          <p className="mb-4 text-[13px] text-slate-500">Land Revenue Management System — demo project inspired by Bihar land administration. <b>Not an official Bihar Government system.</b></p>
+          <div className="mb-4 flex items-center justify-between gap-2.5">
+            <span className="flex items-center gap-2.5 text-navy dark:text-white"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft sm:h-9 sm:w-9 sm:rounded-xl"><Landmark size={17} className="text-white" aria-hidden="true" /></span><span className="text-lg font-bold tracking-tight sm:text-xl">LRMS</span></span>
+            <button type="button" onClick={toggle} aria-label="Toggle dark theme" title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-navy dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white">{theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}</button>
+          </div>
+          <p className="mb-4 text-[13px] text-slate-500 dark:text-slate-400">Land Revenue Management System — demo project inspired by Bihar land administration. <b>Not an official Bihar Government system.</b></p>
           <h2 className="mb-3 text-base font-bold">{title}</h2>
           {children}
         </Card>
@@ -86,22 +91,22 @@ export function LoginPage() {
       <form onSubmit={submit} className="space-y-2.5">
         <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
         <Field label="Password"><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
-        {err && <p className="text-sm text-red-600">{err}</p>}
+        {err && <p className="text-sm text-red-600 dark:text-red-400">{err}</p>}
         {/* Explicit inline gradient + white text: the button must never
             render as a dark bar with no visible label (as in the screenshot). */}
         <Button className="w-full py-2.5 text-sm font-bold text-white shadow-lift hover:brightness-110" type="submit" style={{ background: 'linear-gradient(90deg, #0b2447, #0f766e)', color: '#ffffff' }}><LogIn size={17} aria-hidden="true" />Sign in</Button>
       </form>
       {/* Responsive demo-accounts list: rows wrap on narrow screens instead
           of overflowing, email breaks rather than pushing the pill off-screen. */}
-      <div className="mt-4 rounded-xl bg-gradient-to-br from-teal-50 via-white to-amber-50 p-3 text-[13px] shadow-sm ring-1 ring-inset ring-teal-100 sm:p-3.5">
-        <p className="flex items-center gap-1.5 font-semibold text-navy"><Users size={15} className="text-teal-600" aria-hidden="true" />Demo accounts (click to fill):</p>
-        <div className="mt-1 divide-y divide-teal-100/70">
-          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50" onClick={() => fill('admin@lrms.demo')}><span className="break-all font-medium text-teal-800 underline">admin@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-navy px-2 py-0.5 text-[11px] font-bold text-white">SuperAdmin</span></button>
-          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50" onClick={() => fill('officer@lrms.demo')}><span className="break-all font-medium text-teal-800 underline">officer@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-teal-600 px-2 py-0.5 text-[11px] font-bold text-white">CircleOfficer</span></button>
-          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50" onClick={() => fill('citizen@lrms.demo')}><span className="break-all font-medium text-teal-800 underline">citizen@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-white">Citizen</span></button>
+      <div className="mt-4 rounded-xl bg-gradient-to-br from-teal-50 via-white to-amber-50 p-3 text-[13px] shadow-sm ring-1 ring-inset ring-teal-100 dark:from-teal-400/10 dark:via-[#0d1526] dark:to-amber-400/10 dark:ring-white/10 sm:p-3.5">
+        <p className="flex items-center gap-1.5 font-semibold text-navy dark:text-white"><Users size={15} className="text-teal-600 dark:text-teal-400" aria-hidden="true" />Demo accounts (click to fill):</p>
+        <div className="mt-1 divide-y divide-teal-100/70 dark:divide-white/10">
+          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50 dark:hover:bg-white/10" onClick={() => fill('admin@lrms.demo')}><span className="break-all font-medium text-teal-800 underline dark:text-teal-200">admin@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-navy px-2 py-0.5 text-[11px] font-bold text-white">SuperAdmin</span></button>
+          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50 dark:hover:bg-white/10" onClick={() => fill('officer@lrms.demo')}><span className="break-all font-medium text-teal-800 underline dark:text-teal-200">officer@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-teal-600 px-2 py-0.5 text-[11px] font-bold text-white">CircleOfficer</span></button>
+          <button className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-teal-50 dark:hover:bg-white/10" onClick={() => fill('citizen@lrms.demo')}><span className="break-all font-medium text-teal-800 underline dark:text-teal-200">citizen@lrms.demo / Demo@123</span><span className="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-white">Citizen</span></button>
         </div>
       </div>
-      <p className="mt-3 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-center text-[13px]"><Link to="/register" className="text-teal-700 underline">Create a citizen account</Link><span aria-hidden="true">·</span><Link to="/login" className="text-teal-700 underline">Forgot password? (demo: contact admin)</Link></p>
+      <p className="mt-3 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-center text-[13px]"><Link to="/register" className="text-teal-700 underline dark:text-teal-300">Create a citizen account</Link><span aria-hidden="true">·</span><Link to="/login" className="text-teal-700 underline dark:text-teal-300">Forgot password? (demo: contact admin)</Link></p>
     </Shell>
   );
 }
@@ -129,13 +134,13 @@ export function RegisterPage() {
           <Field label="Email"><Input type="email" required value={form.email} onChange={set('email')} /></Field>
           <Field label="Address"><Input required value={form.address} onChange={set('address')} /></Field>
           <Field label="Password"><Input type="password" required minLength={8} value={form.password} onChange={set('password')} /></Field>
-          {err && <p className="text-sm text-red-600">{err}</p>}
+          {err && <p className="text-sm text-red-600 dark:text-red-400">{err}</p>}
           <Button className="w-full" type="submit">Register & send OTP</Button>
-          <p className="text-center text-sm"><Link to="/login" className="text-teal-700 underline">Back to sign in</Link></p>
+          <p className="text-center text-sm"><Link to="/login" className="text-teal-700 underline dark:text-teal-300">Back to sign in</Link></p>
         </form>
       ) : (
         <form onSubmit={verify} className="space-y-3">
-          <p className="text-sm text-slate-600">Mock OTP step (demo only — never use in production). Enter any 6-digit code.</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">Mock OTP step (demo only — never use in production). Enter any 6-digit code.</p>
           <Field label="OTP (6 digits)"><Input required value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="123456" /></Field>
           {err && <p className="text-sm text-red-600">{err}</p>}
           <Button className="w-full" type="submit">Verify & finish</Button>

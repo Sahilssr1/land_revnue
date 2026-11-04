@@ -11,5 +11,5 @@ export default function MapView({ points }: { points: { lat: number; lng: number
     points.forEach((p) => L.marker([p.lat, p.lng]).addTo(map).bindPopup(p.label));
     return () => { map.remove(); };
   }, [points]);
-  return <div ref={ref} className="h-72 w-full rounded-xl border" />;
+  return <div ref={ref} className="h-72 w-full rounded-xl border dark:border-white/10" />;
 }

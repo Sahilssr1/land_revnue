@@ -15,7 +15,7 @@ function Page({ title, icon, subtitle, children }: { title: string; icon?: Lucid
 }
 // Icon is a presentational prop only — label/value come from existing data.
 function Stat({ label, value, icon: Icon }: { label: string; value: string; icon: LucideIcon }) {
-  return <Card className="group relative overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-6"><span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-navy via-teal-500 to-teal-400" /><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p><p className="mt-2 text-2xl font-bold tracking-tight text-navy">{value}</p></div><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy to-teal-600 text-white shadow-soft transition-transform duration-300 group-hover:scale-105"><Icon size={19} aria-hidden="true" /></span></div></Card>;
+  return <Card className="group relative overflow-hidden p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-5"><span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-navy via-teal-500 to-teal-400" /><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</p><p className="mt-1.5 truncate text-[1.35rem] font-bold leading-tight tracking-tight text-navy dark:text-white sm:text-2xl">{value}</p></div><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy to-teal-600 text-white shadow-soft transition-transform duration-300 group-hover:scale-105 sm:h-10 sm:w-10"><Icon size={18} aria-hidden="true" /></span></div></Card>;
 }
 // Keyword icon for an activity line — text unchanged; only decorates rows
 // whose wording already states what happened.
@@ -32,12 +32,12 @@ export function CitizenDashboard() {
   return (
     <Page title="Citizen Dashboard" icon={LayoutDashboard} subtitle="Your land, applications, revenue and certificates at a glance.">
       <TrustStrip />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         <Stat label="My registered land" value={String(s.myLand)} icon={Map} /><Stat label="Total land area (decimals)" value={String(s.totalArea)} icon={Ruler} />
         <Stat label="Mutation applications" value={String(s.mutations)} icon={FileText} /><Stat label="Pending requests" value={String(s.pending)} icon={Clock} />
         <Stat label="Revenue status" value={s.revenueStatus} icon={Wallet} /><Stat label="Certificates" value={String(s.certificates)} icon={Award} />
       </div>
-      <Card className="mt-6 p-5 sm:p-6"><h2 className="mb-4 flex items-center gap-2 font-bold tracking-tight text-navy"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-50 text-teal-700 ring-1 ring-inset ring-teal-100"><Activity size={15} aria-hidden="true" /></span>Recent activity</h2>{s.recent.map((a) => { const Icon = activityIcon(a.text); return <p key={a.id} className="flex items-start gap-2 border-b py-2 text-sm last:border-0"><Icon size={16} className="mt-0.5 shrink-0 text-teal-600" aria-hidden="true" /><span>{a.text} <span className="text-slate-400">· {a.time}</span></span></p>; })}</Card>
+      <Card className="mt-4 p-4 sm:mt-6 sm:p-5"><h2 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-navy dark:text-white sm:text-base"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-50 dark:bg-teal-400/10 text-teal-700 dark:text-teal-300 ring-1 ring-inset ring-teal-100 dark:ring-teal-400/20"><Activity size={15} aria-hidden="true" /></span>Recent activity</h2>{s.recent.map((a) => { const Icon = activityIcon(a.text); return <p key={a.id} className="flex items-start gap-2 border-b border-slate-100 dark:border-white/10 py-2 text-sm last:border-0"><Icon size={16} className="mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" aria-hidden="true" /><span>{a.text} <span className="text-slate-400 dark:text-slate-500">· {a.time}</span></span></p>; })}</Card>
     </Page>
   );
 }
@@ -51,9 +51,9 @@ export function MyLand() {
         <div className="grid gap-4 md:grid-cols-2">{items.map((l) => (
           <Card key={l.id} className="p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-6">
             <p className="font-bold">{l.mauza}, {l.village} — {l.district}</p>
-            <p className="mt-2 text-sm text-slate-600">Khata {l.khata} · Khesra {l.khesra} · Plot {l.plot} · Circle {l.circle}</p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Khata {l.khata} · Khesra {l.khesra} · Plot {l.plot} · Circle {l.circle}</p>
             <p className="text-sm">Area: {l.area} decimals · {l.classification} · <Badge status={l.status} /></p>
-            <p className="mt-2 text-sm text-slate-500">Jamabandi JB-{l.khata} · Ownership history available on request where legally permitted.</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Jamabandi JB-{l.khata} · Ownership history available on request where legally permitted.</p>
             <Button variant="secondary" className="mt-3" onClick={() => alert('Demo: document download would come from the live API.')}><Download size={16} aria-hidden="true" />Download record document</Button>
           </Card>
         ))}</div>
@@ -79,7 +79,7 @@ export function SearchRecords() {
         <Field label="Khata number"><Input value={f.khata} onChange={set('khata')} /></Field>
         <Field label="Khesra number"><Input value={f.khesra} onChange={set('khesra')} /></Field>
         <Field label="Owner name"><Input value={f.owner} onChange={set('owner')} /></Field>
-      </div><p className="mt-3 text-xs text-slate-500">Public search shows limited ownership details only; full records require an authenticated, authorised request.</p></Card>
+      </div><p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Public search shows limited ownership details only; full records require an authenticated, authorised request.</p></Card>
       <Card><DataTable columns={[
         { key: 'district', label: 'District' }, { key: 'circle', label: 'Circle' }, { key: 'mauza', label: 'Mauza' },
         { key: 'khata', label: 'Khata' }, { key: 'khesra', label: 'Khesra' }, { key: 'owner', label: 'Owner' }, { key: 'area', label: 'Area (dec.)' },
@@ -101,7 +101,7 @@ export function MutationApply() {
     await api.action('/api/mutations', { landId, seller, buyer });
     const t = d.newTracking(); setTracking(t); toast(`Mutation submitted — tracking ${t}`, 'success');
   };
-  if (tracking) return <Page title="Apply for Mutation" icon={FileText} subtitle="Submit a Dakhil-Kharij application and track its progress."><Card className="p-6 text-center"><p className="text-lg font-bold text-emerald-700">Application submitted!</p><p className="mt-2">Your tracking number: <b>{tracking}</b></p><p className="text-sm text-slate-500">Track it under Complaints/Notifications or re-visit this page after an officer updates it. {isDemo() ? '(Demo — no live submission.)' : ''}</p><Button className="mt-4" onClick={() => setTracking('')}>Submit another</Button></Card></Page>;
+  if (tracking) return <Page title="Apply for Mutation" icon={FileText} subtitle="Submit a Dakhil-Kharij application and track its progress."><Card className="p-6 text-center"><p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">Application submitted!</p><p className="mt-2">Your tracking number: <b>{tracking}</b></p><p className="text-sm text-slate-500 dark:text-slate-400">Track it under Complaints/Notifications or re-visit this page after an officer updates it. {isDemo() ? '(Demo — no live submission.)' : ''}</p><Button className="mt-4" onClick={() => setTracking('')}>Submit another</Button></Card></Page>;
   return (
     <Page title="Apply for Mutation (Dakhil-Kharij)" icon={FileText} subtitle="Submit a Dakhil-Kharij application and track its progress.">
       <Card className="max-w-2xl p-4"><form onSubmit={submit} className="space-y-3">
@@ -109,8 +109,8 @@ export function MutationApply() {
         <Field label="Seller name"><Input required value={seller} onChange={(e) => setSeller(e.target.value)} /></Field>
         <Field label="Buyer name"><Input required value={buyer} onChange={(e) => setBuyer(e.target.value)} /></Field>
         <Field label="Upload documents (PDF/JPG/PNG, max 5 MB each)"><Input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" onChange={onFiles} /></Field>
-        {files.length > 0 && <ul className="text-sm text-slate-600">{files.map((f) => <li key={f.name}>{f.name} — {(f.size / 1024).toFixed(0)} KB</li>)}</ul>}
-        {err && <p className="text-sm text-red-600">{err}</p>}
+        {files.length > 0 && <ul className="text-sm text-slate-600 dark:text-slate-300">{files.map((f) => <li key={f.name}>{f.name} — {(f.size / 1024).toFixed(0)} KB</li>)}</ul>}
+        {err && <p className="text-sm text-red-600 dark:text-red-400">{err}</p>}
         <Button type="submit">Submit application</Button>
       </form></Card>
     </Page>
@@ -127,8 +127,8 @@ export function RevenuePay() {
   };
   return (
     <Page title="Pay Land Revenue (Bhu-Lagan)" icon={Wallet} subtitle="Outstanding revenue, payments and receipts.">
-      <div className="mb-4 rounded-lg border border-teal-300 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-800">Razorpay TEST MODE — no real money. A payment is never marked successful without verified payment confirmation.</div>
-      {paid && <Card className="mb-4 p-4 text-emerald-700">Demo receipt noted — in production a receipt appears only after verified confirmation.</Card>}
+      <div className="mb-4 rounded-lg border border-teal-300 dark:border-teal-400/30 bg-teal-50 dark:bg-teal-400/10 px-4 py-3 text-sm font-semibold text-teal-800 dark:text-teal-200">Razorpay TEST MODE — no real money. A payment is never marked successful without verified payment confirmation.</div>
+      {paid && <Card className="mb-4 p-4 text-emerald-700 dark:text-emerald-300">Demo receipt noted — in production a receipt appears only after verified confirmation.</Card>}
       <Card><DataTable columns={[
         { key: 'khata', label: 'Khata' }, { key: 'amount', label: 'Amount', render: (r) => fmtINR(Number(r.amount)) },
         { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> }, { key: 'receipt', label: 'Receipt' },
@@ -147,7 +147,7 @@ export function CertificatesPage() {
         <Field label="Certificate type"><Select value={type} onChange={(e) => setType(e.target.value)}><option>LPC</option></Select></Field>
         <Field label="Land record"><Select value={landId} onChange={(e) => setLandId(e.target.value)}>{d.landRecords.map((l) => <option key={l.id} value={l.id}>{l.khata} / {l.khesra}</option>)}</Select></Field>
         <Field label="Supporting document"><Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFileErr(validateFile(f) || ''); }} /></Field>
-        <div className="md:col-span-3">{fileErr && <p className="text-sm text-red-600">{fileErr}</p>}<Button type="submit">Apply</Button>{submitted && <span className="ml-3 text-sm text-emerald-700">Submitted: {submitted}</span>}</div>
+        <div className="md:col-span-3">{fileErr && <p className="text-sm text-red-600 dark:text-red-400">{fileErr}</p>}<Button type="submit">Apply</Button>{submitted && <span className="ml-3 text-sm text-emerald-700 dark:text-emerald-300">Submitted: {submitted}</span>}</div>
       </form></Card>
       <Card><DataTable columns={[
         { key: 'type', label: 'Type' }, { key: 'landId', label: 'Land' }, { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> }, { key: 'ref', label: 'Reference' },
@@ -162,7 +162,7 @@ export function SurveysPage() {
     <Page title="Land Survey Requests" icon={Ruler} subtitle="Request measurement and track your assigned officer.">
       <Card className="mb-4 p-4"><form className="flex flex-wrap items-end gap-3" onSubmit={async (e) => { e.preventDefault(); await api.action('/api/surveys', { landId }); setDone(true); toast('Survey request submitted', 'success'); }}>
         <Field label="Land record"><Select value={landId} onChange={(e) => setLandId(e.target.value)}>{d.landRecords.map((l) => <option key={l.id} value={l.id}>{l.khata} / {l.khesra} — {l.district}</option>)}</Select></Field>
-        <Button type="submit">Request measurement</Button>{done && <span className="text-sm text-emerald-700">Request recorded (demo).</span>}
+        <Button type="submit">Request measurement</Button>{done && <span className="text-sm text-emerald-700 dark:text-emerald-300">Request recorded (demo).</span>}
       </form></Card>
       <Card><DataTable columns={[
         { key: 'landId', label: 'Land' }, { key: 'khesra', label: 'Khesra' }, { key: 'officer', label: 'Assigned officer' }, { key: 'appointment', label: 'Appointment' },
@@ -179,7 +179,7 @@ export function ComplaintsPage() {
         <Field label="Subject"><Input required value={subject} onChange={(e) => setSubject(e.target.value)} /></Field>
         <Field label="Details"><Input value={detail} onChange={(e) => setDetail(e.target.value)} /></Field>
         <Field label="Supporting evidence (PDF/JPG/PNG, max 5 MB)"><Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => { const f = e.target.files?.[0]; if (f) { const v = validateFile(f); if (v) toast(v, 'error'); } }} /></Field>
-        <Button type="submit">Register complaint</Button>{done && <span className="ml-3 text-sm text-emerald-700">Registered (demo).</span>}
+        <Button type="submit">Register complaint</Button>{done && <span className="ml-3 text-sm text-emerald-700 dark:text-emerald-300">Registered (demo).</span>}
       </form></Card>
       <Card><DataTable columns={[
         { key: 'subject', label: 'Subject' }, { key: 'officer', label: 'Officer' }, { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> },
@@ -192,7 +192,7 @@ export function NotificationsPage() {
   const { data, loading } = useLoad(() => api.notifications(), d.notifications);
   if (loading) return <Loading />;
   const items = Array.isArray(data) ? data : [];
-  return <Page title="Notifications" icon={Bell} subtitle="Updates on your applications, payments and certificates.">{items.length === 0 ? <Empty /> : <Card className="p-4">{items.map((n: { id: string; title: string; body: string; date?: string }) => <div key={n.id} className="border-b py-3"><p className="font-semibold">{n.title}</p><p className="text-sm text-slate-600">{n.body}</p><p className="text-xs text-slate-400">{n.date || ''}</p></div>)}</Card>}</Page>;
+  return <Page title="Notifications" icon={Bell} subtitle="Updates on your applications, payments and certificates.">{items.length === 0 ? <Empty /> : <Card className="p-4">{items.map((n: { id: string; title: string; body: string; date?: string }) => <div key={n.id} className="border-b py-3 dark:border-white/10"><p className="font-semibold">{n.title}</p><p className="text-sm text-slate-600 dark:text-slate-300">{n.body}</p><p className="text-xs text-slate-400">{n.date || ''}</p></div>)}</Card>}</Page>;
 }
 export function ProfilePage() {
   const { user } = useAuth(); const toast = useToast();
@@ -207,7 +207,7 @@ export function ProfilePage() {
         <Field label="Address"><Input value={address} onChange={(e) => setAddress(e.target.value)} /></Field>
         <Button type="submit">Save profile</Button>
       </form>
-      <div className="mt-6 border-t pt-4"><p className="mb-2 font-semibold">Forgot password</p><p className="text-sm text-slate-500">In production, use the emailed reset link. In this demo, contact the administrator.</p></div></Card>
+      <div className="mt-6 border-t pt-4 dark:border-white/10"><p className="mb-2 font-semibold">Forgot password</p><p className="text-sm text-slate-500 dark:text-slate-400">In production, use the emailed reset link. In this demo, contact the administrator.</p></div></Card>
     </Page>
   );
 }

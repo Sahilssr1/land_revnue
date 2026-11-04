@@ -11,24 +11,24 @@ function Page({ title, icon, subtitle, children }: { title: string; icon?: Lucid
 // Icon is a presentational prop only — label/value come from existing data.
 function Stat({ label, value, icon: Icon, sub }: { label: string; value: string; icon: LucideIcon; sub?: string }) {
   return (
-    <Card className="group relative overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
-      <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-navy via-teal-500 to-teal-400" />
+    <Card className="group relative overflow-hidden p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-5">
+      <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-navy via-teal-500 to-teal-400" />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-2 text-xl font-bold tracking-tight text-navy">{value}</p>
-          {sub && <p className="mt-1 text-xs text-slate-500">{sub}</p>}
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</p>
+          <p className="mt-1.5 truncate text-[1.35rem] font-bold leading-tight tracking-tight text-navy dark:text-white sm:text-2xl">{value}</p>
+          {sub && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{sub}</p>}
         </div>
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy to-teal-600 text-white shadow-soft transition-transform duration-300 group-hover:scale-105"><Icon size={19} aria-hidden="true" /></span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-navy to-teal-600 text-white shadow-soft transition-transform duration-300 group-hover:scale-105 sm:h-10 sm:w-10"><Icon size={18} aria-hidden="true" /></span>
       </div>
     </Card>
   );
 }
 function ChartCard({ title, icon: Icon, children }: { title: string; icon?: LucideIcon; children: React.ReactNode }) {
   return (
-    <Card className="p-5">
-      <h3 className="mb-4 flex items-center gap-2 font-bold tracking-tight text-navy">{Icon && <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-50 text-teal-700 ring-1 ring-inset ring-teal-100"><Icon size={15} aria-hidden="true" /></span>}{title}</h3>
-      <div className="h-64">{children}</div>
+    <Card className="p-4 sm:p-5">
+      <h3 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-navy dark:text-white sm:text-base">{Icon && <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-50 dark:bg-teal-400/10 text-teal-700 dark:text-teal-300 ring-1 ring-inset ring-teal-100 dark:ring-teal-400/20"><Icon size={15} aria-hidden="true" /></span>}<span className="min-w-0">{title}</span></h3>
+      <div className="h-56 sm:h-64">{children}</div>
     </Card>
   );
 }
@@ -56,7 +56,7 @@ export function AdminDashboard() {
   return (
     <Page title="Admin Dashboard" icon={LayoutDashboard} subtitle="Overview of citizens, land records, applications and revenue.">
       <TrustStrip />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-4 lg:grid-cols-5">
         <Stat label="Total registered citizens" value={stats.totalCitizens.toLocaleString()} icon={Users} />
         <Stat label="Total land records" value={stats.totalLandRecords.toLocaleString()} icon={Map} />
         <Stat label="Total mutation applications" value={stats.totalMutations.toLocaleString()} icon={FileText} />
@@ -68,15 +68,15 @@ export function AdminDashboard() {
         <Stat label="Active land disputes" value={String(stats.activeDisputes)} icon={AlertTriangle} />
         <Stat label="Recent activities" value={`${stats.recentActivities.length} items`} icon={Activity} />
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-2">
         <ChartCard title="Monthly Revenue Collection" icon={IndianRupee}><ResponsiveContainer width="100%" height="100%"><BarChart data={rev}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="month" /><YAxis /><Tooltip formatter={(v) => fmtINR(Number(v))} /><Bar dataKey="amount" fill="#0D9488" /></BarChart></ResponsiveContainer></ChartCard>
         <ChartCard title="Mutation Application Statistics" icon={FileText}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={mut} dataKey="value" nameKey="name" outerRadius={90} label>{mut.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}</Pie><Tooltip /><Legend /></PieChart></ResponsiveContainer></ChartCard>
         <ChartCard title="District-wise Land Records" icon={Map}><ResponsiveContainer width="100%" height="100%"><BarChart data={dist}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="district" /><YAxis /><Tooltip /><Bar dataKey="records" fill="#0B2447" /></BarChart></ResponsiveContainer></ChartCard>
         <ChartCard title="Application Approval Trends" icon={TrendingUp}><ResponsiveContainer width="100%" height="100%"><LineChart data={trend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="month" /><YAxis /><Tooltip /><Legend /><Line type="monotone" dataKey="approved" stroke="#0D9488" /><Line type="monotone" dataKey="rejected" stroke="#EF4444" /></LineChart></ResponsiveContainer></ChartCard>
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <Card className="p-5"><h3 className="mb-4 flex items-center gap-2 font-bold tracking-tight text-navy"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-50 text-teal-700 ring-1 ring-inset ring-teal-100"><Activity size={15} aria-hidden="true" /></span>Recent activities</h3>{stats.recentActivities.map((a) => { const Icon = activityIcon(a.text); return <p key={a.id} className="flex items-start gap-2 border-b py-2 text-sm last:border-0"><Icon size={16} className="mt-0.5 shrink-0 text-teal-600" aria-hidden="true" /><span>{a.text} <span className="text-slate-400">· {a.time}</span></span></p>; })}</Card>
-        <Card className="p-5"><h3 className="mb-4 flex items-center gap-2 font-bold tracking-tight text-navy"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-50 text-teal-700 ring-1 ring-inset ring-teal-100"><Map size={15} aria-hidden="true" /></span>Land locations (demo, Patna region)</h3><MapView points={d.landRecords.map((l) => ({ lat: l.lat, lng: l.lng, label: `${l.khata} / ${l.khesra} — ${l.owner}` }))} /></Card>
+      <div className="mt-4 grid gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-2">
+        <Card className="p-4 sm:p-5"><h3 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-navy dark:text-white sm:text-base"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-50 dark:bg-teal-400/10 text-teal-700 dark:text-teal-300 ring-1 ring-inset ring-teal-100 dark:ring-teal-400/20"><Activity size={15} aria-hidden="true" /></span>Recent activities</h3>{stats.recentActivities.map((a) => { const Icon = activityIcon(a.text); return <p key={a.id} className="flex items-start gap-2 border-b border-slate-100 dark:border-white/10 py-2 text-sm last:border-0"><Icon size={16} className="mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" aria-hidden="true" /><span>{a.text} <span className="text-slate-400 dark:text-slate-500">· {a.time}</span></span></p>; })}</Card>
+        <Card className="p-4 sm:p-5"><h3 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-navy dark:text-white sm:text-base"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-50 dark:bg-teal-400/10 text-teal-700 dark:text-teal-300 ring-1 ring-inset ring-teal-100 dark:ring-teal-400/20"><Map size={15} aria-hidden="true" /></span>Land locations (demo, Patna region)</h3><MapView points={d.landRecords.map((l) => ({ lat: l.lat, lng: l.lng, label: `${l.khata} / ${l.khesra} — ${l.owner}` }))} /></Card>
       </div>
     </Page>
   );
@@ -177,7 +177,7 @@ export function JamabandiPage() {
         { key: 'jamabandiNo', label: 'Jamabandi No.' }, { key: 'khata', label: 'Khata' }, { key: 'khesra', label: 'Khesra' }, { key: 'owner', label: 'Owner' }, { key: 'area', label: 'Area' }, { key: 'year', label: 'Year' },
         { key: 'id', label: 'Actions', render: (r) => <Button variant="secondary" onClick={() => setRows((x) => x.map((y) => y.id === r.id ? { ...y, remarks: 'Updated following authorised mutation (demo)' } : y))}>Update after mutation</Button> },
       ]} rows={filtered as never[]} /></Card>
-      <p className="mt-3 text-sm text-slate-500">Historical Jamabandi versions are retained on every authorised mutation in production (LandOwnershipHistory + JamabandiRecords).</p>
+      <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Historical Jamabandi versions are retained on every authorised mutation in production (LandOwnershipHistory + JamabandiRecords).</p>
     </Page>
   );
 }
@@ -188,7 +188,7 @@ export function RevenuePage() {
   return (
     <Page title="Revenue / Bhu-Lagan Management" icon={Wallet} subtitle="Rates, payments and transaction history.">
       <Card className="mb-4 p-4"><h3 className="mb-3 font-bold">Revenue rates (per decimal / year)</h3><div className="grid gap-3 md:grid-cols-4">{rates.map((r) => (
-        <div key={r.id} className="rounded-xl border border-slate-100 bg-white/70 p-3.5 shadow-sm transition-all duration-200 hover:shadow-soft"><p className="font-semibold">{r.classification}</p><p className="text-sm text-slate-500">{r.unit}</p>
+        <div key={r.id} className="rounded-xl border border-slate-100 dark:border-white/10 bg-white/70 dark:bg-white/5 p-3.5 shadow-sm transition-all duration-200 hover:shadow-soft"><p className="font-semibold">{r.classification}</p><p className="text-sm text-slate-500 dark:text-slate-400">{r.unit}</p>
           <div className="mt-2 flex gap-2"><Input type="number" defaultValue={r.rate} id={`rate-${r.id}`} /><Button variant="secondary" onClick={() => { const el = document.getElementById(`rate-${r.id}`) as HTMLInputElement; saveRate(r.id, Number(el.value)); }}>Save</Button></div></div>
       ))}</div></Card>
       <Card><h3 className="p-4 font-bold">Payment records & transaction history</h3><DataTable columns={[
