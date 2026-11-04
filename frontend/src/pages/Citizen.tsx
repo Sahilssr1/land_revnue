@@ -10,10 +10,10 @@ function useLoad<T>(fn: () => Promise<T>, fallback: T) {
   return { data, loading, error };
 }
 function Page({ title, children }: { title: string; children: React.ReactNode }) {
-  return <div><h1 className="mb-4 text-2xl font-bold text-navy">{title}</h1>{children}</div>;
+  return <div className="animate-page-in"><h1 className="mb-6 text-2xl font-bold tracking-tight text-navy md:text-[1.75rem]">{title}</h1>{children}</div>;
 }
 function Stat({ label, value }: { label: string; value: string }) {
-  return <Card className="p-4"><p className="text-xs uppercase tracking-wide text-slate-500">{label}</p><p className="mt-1 text-2xl font-bold text-navy">{value}</p></Card>;
+  return <Card className="group relative overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-6"><span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-navy via-teal-500 to-teal-400" /><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p><p className="mt-2 text-2xl font-bold tracking-tight text-navy">{value}</p></Card>;
 }
 export function CitizenDashboard() {
   const { data, loading } = useLoad(() => api.citizenStats(), d.citizenStats);
@@ -26,7 +26,7 @@ export function CitizenDashboard() {
         <Stat label="Mutation applications" value={String(s.mutations)} /><Stat label="Pending requests" value={String(s.pending)} />
         <Stat label="Revenue status" value={s.revenueStatus} /><Stat label="Certificates" value={String(s.certificates)} />
       </div>
-      <Card className="mt-6 p-4"><h2 className="mb-3 font-bold">Recent activity</h2>{s.recent.map((a) => <p key={a.id} className="border-b py-2 text-sm">{a.text} <span className="text-slate-400">· {a.time}</span></p>)}</Card>
+      <Card className="mt-6 p-5 sm:p-6"><h2 className="mb-4 font-bold tracking-tight text-navy">Recent activity</h2>{s.recent.map((a) => <p key={a.id} className="border-b py-2 text-sm">{a.text} <span className="text-slate-400">· {a.time}</span></p>)}</Card>
     </Page>
   );
 }
@@ -38,7 +38,7 @@ export function MyLand() {
     <Page title="My Land Records">
       {items.length === 0 ? <Empty text="No land records linked to your account in demo data." /> : (
         <div className="grid gap-4 md:grid-cols-2">{items.map((l) => (
-          <Card key={l.id} className="p-4">
+          <Card key={l.id} className="p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-6">
             <p className="font-bold">{l.mauza}, {l.village} — {l.district}</p>
             <p className="mt-2 text-sm text-slate-600">Khata {l.khata} · Khesra {l.khesra} · Plot {l.plot} · Circle {l.circle}</p>
             <p className="text-sm">Area: {l.area} decimals · {l.classification} · <Badge status={l.status} /></p>

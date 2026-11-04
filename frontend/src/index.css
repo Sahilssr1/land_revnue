@@ -1,4 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body { font-family: ui-sans-system, system-ui, sans-serif; }
+
+/* Typography + base polish. If the font fetch is unavailable, the system
+   stack in tailwind.config.js takes over — the build never depends on it. */
+@layer base {
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    font-family: theme('fontFamily.sans');
+    background-color: #f7f9fc;
+    color: #0f172a;
+  }
+  ::selection { background-color: rgba(13, 148, 136, 0.22); }
+  :focus-visible { outline: 2px solid #0d9488; outline-offset: 2px; border-radius: 4px; }
+}
+
+/* Glassmorphism card utility (used alongside Tailwind classes). */
+@layer components {
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 1px 2px rgba(11, 36, 71, 0.06), 0 8px 30px rgba(11, 36, 71, 0.08);
+  }
+  .skeleton-bar {
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* Recharts tooltip polish — data and chart components unchanged. */
+.recharts-tooltip-wrapper { filter: drop-shadow(0 8px 20px rgba(11, 36, 71, 0.16)); }
+.recharts-default-tooltip { border-radius: 12px !important; border: 1px solid #e2e8f0 !important; }
+
+/* Leaflet map corners. */
+.leaflet-container { border-radius: 12px; font-family: inherit; }
+
+/* Slim, unobtrusive scrollbars for sidebar / modal content. */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(11, 36, 71, 0.25); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

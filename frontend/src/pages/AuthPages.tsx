@@ -7,9 +7,9 @@ import { api } from '../services/api';
 
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy p-4">
-      <Card className="w-full max-w-md p-6">
-        <div className="mb-4 flex items-center gap-2 text-navy"><Landmark className="text-teal-600" /><h1 className="text-xl font-bold">LRMS</h1></div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-navy-950 via-navy to-teal-700 p-4">
+      <Card className="animate-modal-in w-full max-w-md p-6 shadow-lift sm:p-8">
+        <div className="mb-4 flex items-center gap-2.5 text-navy"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" /></span><h1 className="text-xl font-bold tracking-tight">LRMS</h1></div>
         <p className="mb-4 text-sm text-slate-500">Land Revenue Management System — demo project inspired by Bihar land administration. <b>Not an official Bihar Government system.</b></p>
         <h2 className="mb-4 text-lg font-bold">{title}</h2>
         {children}
@@ -34,7 +34,7 @@ export function LoginPage() {
         {err && <p className="text-sm text-red-600">{err}</p>}
         <Button className="w-full" type="submit">Sign in</Button>
       </form>
-      <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm">
+      <div className="mt-4 rounded-xl bg-teal-50/70 p-3.5 text-sm ring-1 ring-inset ring-teal-100">
         <p className="font-semibold">Demo accounts (click to fill):</p>
         <button className="block text-teal-700 underline" onClick={() => fill('admin@lrms.demo')}>admin@lrms.demo / Demo@123 (SuperAdmin)</button>
         <button className="block text-teal-700 underline" onClick={() => fill('officer@lrms.demo')}>officer@lrms.demo / Demo@123 (CircleOfficer)</button>

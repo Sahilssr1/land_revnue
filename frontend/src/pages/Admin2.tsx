@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import * as d from '../services/demoData';
 import { Badge, Button, Card, ConfirmDialog, DataTable, Field, Input, Modal, Select, useToast, fmtINR } from '../components/ui';
 
-function Page({ title, children }: { title: string; children: React.ReactNode }) { return <div><h1 className="mb-4 text-2xl font-bold text-navy">{title}</h1>{children}</div>; }
+function Page({ title, children }: { title: string; children: React.ReactNode }) { return <div className="animate-page-in"><h1 className="mb-6 text-2xl font-bold tracking-tight text-navy md:text-[1.75rem]">{title}</h1>{children}</div>; }
 
 export function SurveysAdmin() {
   const toast = useToast(); const [rows, setRows] = useState(d.surveys); const [officer, setOfficer] = useState('Amin — Patna Sadar');
@@ -39,7 +39,7 @@ export function ComplaintsAdmin() {
   const toast = useToast(); const [rows, setRows] = useState(d.complaints); const [remark, setRemark] = useState(''); const [selected, setSelected] = useState<typeof d.complaints[number] | null>(null);
   return (
     <Page title="Complaint & Dispute Management">
-      <Card className="mb-4 p-4"><h3 className="mb-2 font-bold">Land disputes</h3>{d.disputes.map((x) => <p key={x.id} className="text-sm">{x.caseNo} — {x.parties} · Land {x.landId} · <Badge status={x.status} /></p>)}</Card>
+      <Card className="mb-4 p-5"><h3 className="mb-3 font-bold tracking-tight text-navy">Land disputes</h3>{d.disputes.map((x) => <p key={x.id} className="text-sm">{x.caseNo} — {x.parties} · Land {x.landId} · <Badge status={x.status} /></p>)}</Card>
       <Card><DataTable columns={[
         { key: 'subject', label: 'Subject' }, { key: 'citizen', label: 'Citizen' }, { key: 'officer', label: 'Officer' },
         { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> },
@@ -85,10 +85,10 @@ export function MastersAdmin() {
   return (
     <Page title="Masters — Districts, Circles, Blocks & Villages">
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-4"><h3 className="mb-2 font-bold">Districts</h3>{d.masters.districts.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
-        <Card className="p-4"><h3 className="mb-2 font-bold">Circles</h3>{Object.entries(d.masters.circles).map(([k, v]) => <p key={k} className="border-b py-1 text-sm">{k}: {(v as string[]).join(', ')}</p>)}</Card>
-        <Card className="p-4"><h3 className="mb-2 font-bold">Mauzas</h3>{d.masters.mauzas.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
-        <Card className="p-4"><h3 className="mb-2 font-bold">Villages</h3>{d.masters.villages.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Districts</h3>{d.masters.districts.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Circles</h3>{Object.entries(d.masters.circles).map(([k, v]) => <p key={k} className="border-b py-1 text-sm">{k}: {(v as string[]).join(', ')}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Mauzas</h3>{d.masters.mauzas.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
+        <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Villages</h3>{d.masters.villages.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
       </div>
       <p className="mt-3 text-sm text-slate-500">Master CRUD calls /api/admin/masters on the live API; demo view is read-only seed data.</p>
     </Page>
@@ -105,7 +105,7 @@ export function ReportsAdmin() {
     <Page title="Reports & Analytics">
       {err && <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{err}</div>}
       <div className="grid gap-4 md:grid-cols-2">{kinds.map(([k, label]) => (
-        <Card key={k} className="flex items-center justify-between p-4"><p className="font-semibold">{label}</p><span className="flex gap-2"><Button variant="secondary" onClick={() => run(k, 'pdf')}>Export PDF</Button><Button variant="secondary" onClick={() => run(k, 'xlsx')}>Export Excel</Button></span></Card>
+        <Card key={k} className="flex flex-wrap items-center justify-between gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"><p className="font-semibold">{label}</p><span className="flex gap-2"><Button variant="secondary" onClick={() => run(k, 'pdf')}>Export PDF</Button><Button variant="secondary" onClick={() => run(k, 'xlsx')}>Export Excel</Button></span></Card>
       ))}</div>
       <p className="mt-4 text-sm text-slate-500">Exports call /api/reports/&lt;kind&gt;?format=pdf|xlsx. If the API is offline, exports fail gracefully with the message above and no fake file is produced. Total revenue (demo): {fmtINR(d.adminStats.revenueCollected)}.</p>
     </Page>

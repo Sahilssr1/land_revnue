@@ -5,9 +5,9 @@ import * as d from '../services/demoData';
 import { Badge, Button, Card, ConfirmDialog, DataTable, Field, Input, Loading, Modal, Select, useToast, fmtINR } from '../components/ui';
 import MapView from '../components/MapView';
 
-function Page({ title, children }: { title: string; children: React.ReactNode }) { return <div><h1 className="mb-4 text-2xl font-bold text-navy">{title}</h1>{children}</div>; }
-function Stat({ label, value }: { label: string; value: string }) { return <Card className="p-4"><p className="text-xs uppercase tracking-wide text-slate-500">{label}</p><p className="mt-1 text-xl font-bold text-navy">{value}</p></Card>; }
-function ChartCard({ title, children }: { title: string; children: React.ReactNode }) { return <Card className="p-4"><h3 className="mb-3 font-bold">{title}</h3><div className="h-64">{children}</div></Card>; }
+function Page({ title, children }: { title: string; children: React.ReactNode }) { return <div className="animate-page-in"><h1 className="mb-6 text-2xl font-bold tracking-tight text-navy md:text-[1.75rem]">{title}</h1>{children}</div>; }
+function Stat({ label, value }: { label: string; value: string }) { return <Card className="group relative overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"><span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-navy via-teal-500 to-teal-400" /><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p><p className="mt-2 text-xl font-bold tracking-tight text-navy">{value}</p></Card>; }
+function ChartCard({ title, children }: { title: string; children: React.ReactNode }) { return <Card className="p-5"><h3 className="mb-4 font-bold tracking-tight text-navy">{title}</h3><div className="h-64">{children}</div></Card>; }
 const COLORS = ['#F59E0B', '#3B82F6', '#0D9488', '#EF4444'];
 
 export function AdminDashboard() {
@@ -40,8 +40,8 @@ export function AdminDashboard() {
         <ChartCard title="Application Approval Trends"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="month" /><YAxis /><Tooltip /><Legend /><Line type="monotone" dataKey="approved" stroke="#0D9488" /><Line type="monotone" dataKey="rejected" stroke="#EF4444" /></LineChart></ResponsiveContainer></ChartCard>
       </div>
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <Card className="p-4"><h3 className="mb-3 font-bold">Recent activities</h3>{stats.recentActivities.map((a) => <p key={a.id} className="border-b py-2 text-sm">{a.text} <span className="text-slate-400">· {a.time}</span></p>)}</Card>
-        <Card className="p-4"><h3 className="mb-3 font-bold">Land locations (demo, Patna region)</h3><MapView points={d.landRecords.map((l) => ({ lat: l.lat, lng: l.lng, label: `${l.khata} / ${l.khesra} — ${l.owner}` }))} /></Card>
+        <Card className="p-5"><h3 className="mb-4 font-bold tracking-tight text-navy">Recent activities</h3>{stats.recentActivities.map((a) => <p key={a.id} className="border-b py-2 text-sm">{a.text} <span className="text-slate-400">· {a.time}</span></p>)}</Card>
+        <Card className="p-5"><h3 className="mb-4 font-bold tracking-tight text-navy">Land locations (demo, Patna region)</h3><MapView points={d.landRecords.map((l) => ({ lat: l.lat, lng: l.lng, label: `${l.khata} / ${l.khesra} — ${l.owner}` }))} /></Card>
       </div>
     </Page>
   );
@@ -153,7 +153,7 @@ export function RevenuePage() {
   return (
     <Page title="Revenue / Bhu-Lagan Management">
       <Card className="mb-4 p-4"><h3 className="mb-3 font-bold">Revenue rates (per decimal / year)</h3><div className="grid gap-3 md:grid-cols-4">{rates.map((r) => (
-        <div key={r.id} className="rounded-lg border p-3"><p className="font-semibold">{r.classification}</p><p className="text-sm text-slate-500">{r.unit}</p>
+        <div key={r.id} className="rounded-xl border border-slate-100 bg-white/70 p-3.5 shadow-sm transition-all duration-200 hover:shadow-soft"><p className="font-semibold">{r.classification}</p><p className="text-sm text-slate-500">{r.unit}</p>
           <div className="mt-2 flex gap-2"><Input type="number" defaultValue={r.rate} id={`rate-${r.id}`} /><Button variant="secondary" onClick={() => { const el = document.getElementById(`rate-${r.id}`) as HTMLInputElement; saveRate(r.id, Number(el.value)); }}>Save</Button></div></div>
       ))}</div></Card>
       <Card><h3 className="p-4 font-bold">Payment records & transaction history</h3><DataTable columns={[

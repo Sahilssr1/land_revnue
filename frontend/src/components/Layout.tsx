@@ -26,44 +26,44 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => onDemoChange(() => setDemo(isDemo())), []);
   useEffect(() => { api.notifications().then((d: unknown) => { const arr = Array.isArray(d) ? d : (d as { items?: unknown[] }).items || []; setNotifs(arr as never[]); }).catch(() => {}); }, []);
   const items = user && ADMIN_ROLES.includes(user.role) ? adminNav : citizenNav;
-  const linkCls = ({ isActive }: { isActive: boolean }) => `block rounded-lg px-3 py-2 text-sm ${isActive ? 'bg-teal-600 text-white' : 'text-slate-200 hover:bg-navy-700'}`;
+  const linkCls = ({ isActive }: { isActive: boolean }) => `relative block rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-soft' : 'text-slate-200 hover:bg-white/10 hover:text-white'}`;
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-3 bg-navy px-4 text-white shadow">
-        <button className="lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
-        <Link to="/" className="flex items-center gap-2 font-bold"><Landmark className="text-teal-500" /> LRMS <span className="hidden text-xs font-normal text-slate-300 sm:inline">Land Revenue Management · Demo</span></Link>
+    <div className="min-h-screen bg-[#f7f9fc]">
+      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 bg-gradient-to-r from-navy-900 via-navy to-navy-700 px-4 text-white shadow-glass sm:px-5">
+        <button className="rounded-lg p-2 transition-colors duration-200 hover:bg-white/10 lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
+        <Link to="/" className="flex items-center gap-2.5 font-bold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" /></span> LRMS <span className="hidden text-xs font-normal text-slate-300 sm:inline">Land Revenue Management · Demo</span></Link>
         <div className="ml-auto flex items-center gap-2">
           <div className="relative">
-            <button className="relative rounded-full p-2 hover:bg-navy-700" onClick={() => setShowNotif(!showNotif)} aria-label="Notifications"><Bell size={20} />{notifs.length > 0 && <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />}</button>
+            <button className="relative rounded-full p-2 transition-colors duration-200 hover:bg-white/10" onClick={() => setShowNotif(!showNotif)} aria-label="Notifications"><Bell size={20} />{notifs.length > 0 && <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-navy" />}</button>
             {showNotif && (
-              <div className="absolute right-0 mt-2 w-80 max-w-[90vw] rounded-xl border bg-white p-3 text-slate-800 shadow-xl">
-                <p className="mb-2 font-semibold">Notifications</p>
-                {notifs.length === 0 ? <p className="text-sm text-slate-500">No notifications.</p> : notifs.slice(0, 5).map((n) => <div key={n.id} className="border-b py-2 text-sm"><p className="font-medium">{n.title}</p><p className="text-slate-500">{n.body}</p></div>)}
-                <Link to="/citizen/notifications" className="mt-2 block text-sm text-teal-600" onClick={() => setShowNotif(false)}>View all</Link>
+              <div className="glass-card animate-modal-in absolute right-0 mt-2 w-80 max-w-[90vw] rounded-2xl p-4 text-slate-800">
+                <p className="mb-2 font-semibold tracking-tight text-navy">Notifications</p>
+                {notifs.length === 0 ? <p className="text-sm text-slate-500">No notifications.</p> : notifs.slice(0, 5).map((n) => <div key={n.id} className="border-b border-slate-100 py-2.5 text-sm last:border-0"><p className="font-medium">{n.title}</p><p className="text-slate-500">{n.body}</p></div>)}
+                <Link to="/citizen/notifications" className="mt-2 block text-sm font-medium text-teal-600 transition-colors duration-200 hover:text-teal-700" onClick={() => setShowNotif(false)}>View all</Link>
               </div>
             )}
           </div>
           <div className="relative">
-            <button className="flex items-center gap-2 rounded-full p-1 pr-2 hover:bg-navy-700" onClick={() => setShowProfile(!showProfile)}><span className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-600"><User size={18} /></span><span className="hidden text-sm md:inline">{user?.name}</span></button>
+            <button className="flex items-center gap-2 rounded-full p-1 pr-2.5 transition-colors duration-200 hover:bg-white/10" onClick={() => setShowProfile(!showProfile)}><span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><User size={18} /></span><span className="hidden text-sm font-medium md:inline">{user?.name}</span></button>
             {showProfile && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl border bg-white p-2 text-slate-800 shadow-xl">
+              <div className="glass-card animate-modal-in absolute right-0 mt-2 w-56 rounded-2xl p-2 text-slate-800">
                 <p className="px-3 py-2 text-sm"><span className="font-semibold">{user?.name}</span><br /><span className="text-slate-500">{user?.email} · {user?.role}</span></p>
-                <Link to="/citizen/profile" className="block rounded px-3 py-2 text-sm hover:bg-slate-100" onClick={() => setShowProfile(false)}>Profile</Link>
-                <button className="block w-full rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-slate-100" onClick={() => { logout(); nav('/login'); }}>Sign out</button>
+                <Link to="/citizen/profile" className="block rounded-xl px-3 py-2 text-sm transition-colors duration-200 hover:bg-teal-50" onClick={() => setShowProfile(false)}>Profile</Link>
+                <button className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-red-600 transition-colors duration-200 hover:bg-red-50" onClick={() => { logout(); nav('/login'); }}>Sign out</button>
               </div>
             )}
           </div>
         </div>
       </header>
       <div className="flex">
-        <aside className={`${open ? 'block' : 'hidden'} fixed inset-y-14 left-0 z-30 w-60 overflow-y-auto bg-navy p-3 lg:static lg:block lg:h-[calc(100vh-3.5rem)]`}>
+        <aside className={`${open ? 'block' : 'hidden'} fixed inset-y-16 left-0 z-30 w-64 overflow-y-auto bg-gradient-to-b from-navy-900 via-navy to-navy-800 p-3 shadow-glass lg:static lg:block lg:h-[calc(100vh-4rem)]`}>
           <nav className="space-y-1">{items.map(([label, to]) => <NavLink key={to} to={to} className={linkCls} onClick={() => setOpen(false)}>{label}</NavLink>)}</nav>
-          <p className="mt-6 px-3 text-xs text-slate-400">Demo project inspired by Bihar land administration. Not an official Bihar Government system.</p>
+          <p className="mt-6 rounded-xl bg-white/5 px-3 py-3 text-xs leading-relaxed text-slate-400">Demo project inspired by Bihar land administration. Not an official Bihar Government system.</p>
         </aside>
-        <main className="min-w-0 flex-1 p-4 md:p-6">
-          {demo && <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-800">Demo data — API offline. Showing fictional demo data; connect the backend via VITE_API_URL for live data.</div>}
+        <main className="animate-page-in min-w-0 flex-1 overflow-x-hidden p-4 md:p-6 lg:p-8">
+          {demo && <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 shadow-sm">Demo data — API offline. Showing fictional demo data; connect the backend via VITE_API_URL for live data.</div>}
           {children}
-          <footer className="mt-8 border-t pt-4 text-center text-xs text-slate-500">LRMS — independent demo/educational project inspired by Bihar land administration. Not an official Bihar Government system. No real citizen data.</footer>
+          <footer className="mt-10 border-t border-slate-200 pt-4 text-center text-xs text-slate-500">LRMS — independent demo/educational project inspired by Bihar land administration. Not an official Bihar Government system. No real citizen data.</footer>
         </main>
       </div>
     </div>
