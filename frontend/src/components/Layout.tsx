@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Bell, Landmark, Menu, User, X } from 'lucide-react';
+import { AlertTriangle, Award, BarChart3, Bell, BookOpen, Database, FileText, Landmark, LayoutDashboard, Map, Menu, Ruler, ScrollText, Search, User, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useAuth, ADMIN_ROLES } from '../auth';
 import { api, isDemo, onDemoChange } from '../services/api';
+import { TrustStrip } from './ui';
 
-const adminNav = [
-  ['Dashboard', '/admin/dashboard'], ['Land Records', '/admin/land-records'], ['Mutations', '/admin/mutations'],
-  ['Jamabandi', '/admin/jamabandi'], ['Revenue', '/admin/revenue'], ['Surveys', '/admin/surveys'],
-  ['Certificates', '/admin/certificates'], ['Complaints', '/admin/complaints'], ['Users & Employees', '/admin/users'],
-  ['Masters', '/admin/masters'], ['Reports', '/admin/reports'], ['Audit Logs', '/admin/audit-logs'],
+// Paths unchanged — only an icon was added to each existing nav item.
+const adminNav: [string, string, LucideIcon][] = [
+  ['Dashboard', '/admin/dashboard', LayoutDashboard], ['Land Records', '/admin/land-records', Map], ['Mutations', '/admin/mutations', FileText],
+  ['Jamabandi', '/admin/jamabandi', BookOpen], ['Revenue', '/admin/revenue', Wallet], ['Surveys', '/admin/surveys', Ruler],
+  ['Certificates', '/admin/certificates', Award], ['Complaints', '/admin/complaints', AlertTriangle], ['Users & Employees', '/admin/users', Users],
+  ['Masters', '/admin/masters', Database], ['Reports', '/admin/reports', BarChart3], ['Audit Logs', '/admin/audit-logs', ScrollText],
 ];
-const citizenNav = [
-  ['Dashboard', '/citizen/dashboard'], ['My Land', '/citizen/my-land'], ['Search Records', '/citizen/search'],
-  ['Apply Mutation', '/citizen/mutation-apply'], ['Pay Revenue', '/citizen/revenue'], ['Certificates', '/citizen/certificates'],
-  ['Surveys', '/citizen/surveys'], ['Complaints', '/citizen/complaints'], ['Notifications', '/citizen/notifications'], ['Profile', '/citizen/profile'],
+const citizenNav: [string, string, LucideIcon][] = [
+  ['Dashboard', '/citizen/dashboard', LayoutDashboard], ['My Land', '/citizen/my-land', Map], ['Search Records', '/citizen/search', Search],
+  ['Apply Mutation', '/citizen/mutation-apply', FileText], ['Pay Revenue', '/citizen/revenue', Wallet], ['Certificates', '/citizen/certificates', Award],
+  ['Surveys', '/citizen/surveys', Ruler], ['Complaints', '/citizen/complaints', AlertTriangle], ['Notifications', '/citizen/notifications', Bell], ['Profile', '/citizen/profile', User],
 ];
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
@@ -26,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => onDemoChange(() => setDemo(isDemo())), []);
   useEffect(() => { api.notifications().then((d: unknown) => { const arr = Array.isArray(d) ? d : (d as { items?: unknown[] }).items || []; setNotifs(arr as never[]); }).catch(() => {}); }, []);
   const items = user && ADMIN_ROLES.includes(user.role) ? adminNav : citizenNav;
-  const linkCls = ({ isActive }: { isActive: boolean }) => `relative block rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-soft' : 'text-slate-200 hover:bg-white/10 hover:text-white'}`;
+  const linkCls = ({ isActive }: { isActive: boolean }) => `relative flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-soft' : 'text-slate-200 hover:bg-white/10 hover:text-white'}`;
   return (
     <div className="min-h-screen bg-[#f7f9fc]">
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 bg-gradient-to-r from-navy-900 via-navy to-navy-700 px-4 text-white shadow-glass sm:px-5">
@@ -57,13 +59,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
       <div className="flex">
         <aside className={`${open ? 'block' : 'hidden'} fixed inset-y-16 left-0 z-30 w-64 overflow-y-auto bg-gradient-to-b from-navy-900 via-navy to-navy-800 p-3 shadow-glass lg:static lg:block lg:h-[calc(100vh-4rem)]`}>
-          <nav className="space-y-1">{items.map(([label, to]) => <NavLink key={to} to={to} className={linkCls} onClick={() => setOpen(false)}>{label}</NavLink>)}</nav>
+          <nav className="space-y-1">{items.map(([label, to, Icon]) => <NavLink key={to} to={to} className={linkCls} onClick={() => setOpen(false)}><Icon size={18} strokeWidth={2.1} className="shrink-0" aria-hidden="true" />{label}</NavLink>)}</nav>
           <p className="mt-6 rounded-xl bg-white/5 px-3 py-3 text-xs leading-relaxed text-slate-400">Demo project inspired by Bihar land administration. Not an official Bihar Government system.</p>
         </aside>
         <main className="animate-page-in min-w-0 flex-1 overflow-x-hidden p-4 md:p-6 lg:p-8">
           {demo && <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 shadow-sm">Demo data — API offline. Showing fictional demo data; connect the backend via VITE_API_URL for live data.</div>}
           {children}
-          <footer className="mt-10 border-t border-slate-200 pt-4 text-center text-xs text-slate-500">LRMS — independent demo/educational project inspired by Bihar land administration. Not an official Bihar Government system. No real citizen data.</footer>
+          <footer className="mt-10 border-t border-slate-200 pt-4"><div className="flex justify-center"><TrustStrip /></div><p className="text-center text-xs text-slate-500">LRMS — independent demo/educational project inspired by Bihar land administration. Not an official Bihar Government system. No real citizen data.</p></footer>
         </main>
       </div>
     </div>

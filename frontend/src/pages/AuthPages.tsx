@@ -1,19 +1,52 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Landmark } from 'lucide-react';
+import { Database, Landmark, Lock, LogIn, ShieldCheck, Users } from 'lucide-react';
 import { useAuth } from '../auth';
 import { Button, Card, Field, Input, useToast } from '../components/ui';
+import { LandArt } from '../components/illustrations';
 import { api } from '../services/api';
 
+// Split auth layout (presentation only — fields, flow and copy unchanged).
+// Desktop: gradient illustration panel + sign-in card. Mobile: the panel
+// collapses to a compact banner above the card.
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
+  const chips = [
+    { icon: ShieldCheck, label: 'Secure sign-in' },
+    { icon: Lock, label: 'JWT-protected sessions' },
+    { icon: Database, label: 'Role-based access' },
+  ];
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-navy-950 via-navy to-teal-700 p-4">
-      <Card className="animate-modal-in w-full max-w-md p-6 shadow-lift sm:p-8">
-        <div className="mb-4 flex items-center gap-2.5 text-navy"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" /></span><h1 className="text-xl font-bold tracking-tight">LRMS</h1></div>
-        <p className="mb-4 text-sm text-slate-500">Land Revenue Management System — demo project inspired by Bihar land administration. <b>Not an official Bihar Government system.</b></p>
-        <h2 className="mb-4 text-lg font-bold">{title}</h2>
-        {children}
-      </Card>
+    <div className="min-h-screen bg-[#f7f9fc] lg:grid lg:grid-cols-[1.05fr_1fr]">
+      <div className="flex items-center gap-3 bg-gradient-to-r from-navy-900 via-navy to-teal-700 px-5 py-4 text-white lg:hidden">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" aria-hidden="true" /></span>
+        <div><p className="font-bold tracking-tight">LRMS</p><p className="text-xs text-teal-100">Land records, mutations & revenue — in one place</p></div>
+      </div>
+      <div className="relative hidden overflow-hidden bg-gradient-to-br from-navy-950 via-navy to-teal-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-teal-500/20 blur-2xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-teal-400/10 blur-2xl" />
+        <div className="relative">
+          <div className="flex items-center gap-2.5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={20} className="text-white" aria-hidden="true" /></span><span className="text-xl font-bold tracking-tight">LRMS</span></div>
+          <h2 className="mt-10 max-w-md text-3xl font-bold leading-tight tracking-tight">Land records, mutations, revenue & certificates — in one clear workspace.</h2>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-teal-100/90">Search records, apply for mutation, pay revenue and track certificates from a single dashboard.</p>
+        </div>
+        <div className="relative">
+          <LandArt className="w-full max-w-md drop-shadow-xl" />
+          <div className="mt-8 flex flex-wrap gap-2">
+            {chips.map(({ icon: Icon, label }) => (
+              <span key={label} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ring-white/20"><Icon size={14} className="text-teal-300" aria-hidden="true" />{label}</span>
+            ))}
+          </div>
+          <p className="mt-5 text-xs text-teal-100/70">Independent demo project — not an official Bihar Government system.</p>
+        </div>
+      </div>
+      <div className="flex items-center justify-center p-4 sm:p-8">
+        <Card className="animate-modal-in w-full max-w-md p-6 shadow-lift sm:p-8">
+          <div className="mb-4 flex items-center gap-2.5 text-navy"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-soft"><Landmark size={19} className="text-white" aria-hidden="true" /></span><h1 className="text-xl font-bold tracking-tight">LRMS</h1></div>
+          <p className="mb-4 text-sm text-slate-500">Land Revenue Management System — demo project inspired by Bihar land administration. <b>Not an official Bihar Government system.</b></p>
+          <h2 className="mb-4 text-lg font-bold">{title}</h2>
+          {children}
+        </Card>
+      </div>
     </div>
   );
 }
@@ -32,10 +65,10 @@ export function LoginPage() {
         <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
         <Field label="Password"><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
         {err && <p className="text-sm text-red-600">{err}</p>}
-        <Button className="w-full" type="submit">Sign in</Button>
+        <Button className="w-full" type="submit"><LogIn size={17} aria-hidden="true" />Sign in</Button>
       </form>
-      <div className="mt-4 rounded-xl bg-teal-50/70 p-3.5 text-sm ring-1 ring-inset ring-teal-100">
-        <p className="font-semibold">Demo accounts (click to fill):</p>
+      <div className="mt-4 rounded-xl bg-gradient-to-br from-teal-50 to-white p-3.5 text-sm shadow-sm ring-1 ring-inset ring-teal-100">
+        <p className="flex items-center gap-1.5 font-semibold text-navy"><Users size={15} className="text-teal-600" aria-hidden="true" />Demo accounts (click to fill):</p>
         <button className="block text-teal-700 underline" onClick={() => fill('admin@lrms.demo')}>admin@lrms.demo / Demo@123 (SuperAdmin)</button>
         <button className="block text-teal-700 underline" onClick={() => fill('officer@lrms.demo')}>officer@lrms.demo / Demo@123 (CircleOfficer)</button>
         <button className="block text-teal-700 underline" onClick={() => fill('citizen@lrms.demo')}>citizen@lrms.demo / Demo@123 (Citizen)</button>

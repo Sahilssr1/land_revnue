@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { api } from '../services/api';
 import * as d from '../services/demoData';
-import { Badge, Button, Card, ConfirmDialog, DataTable, Field, Input, Modal, Select, useToast, fmtINR } from '../components/ui';
+import { AlertTriangle, Award, BarChart3, Database, Download, Plus, Ruler, ScrollText, Users, type LucideIcon } from 'lucide-react';
+import { Badge, Button, Card, ConfirmDialog, DataTable, Field, Input, Modal, PageHeader, Select, useToast, fmtINR } from '../components/ui';
 
-function Page({ title, children }: { title: string; children: React.ReactNode }) { return <div className="animate-page-in"><h1 className="mb-6 text-2xl font-bold tracking-tight text-navy md:text-[1.75rem]">{title}</h1>{children}</div>; }
+function Page({ title, icon, subtitle, children }: { title: string; icon?: LucideIcon; subtitle?: string; children: React.ReactNode }) { return <div className="animate-page-in"><PageHeader icon={icon} title={title} subtitle={subtitle} />{children}</div>; }
 
 export function SurveysAdmin() {
   const toast = useToast(); const [rows, setRows] = useState(d.surveys); const [officer, setOfficer] = useState('Amin — Patna Sadar');
   return (
-    <Page title="Land Survey Management">
+    <Page title="Land Survey Management" icon={Ruler} subtitle="Assign Amin officers and track measurement status.">
       <Card><DataTable columns={[
         { key: 'landId', label: 'Land' }, { key: 'khesra', label: 'Khesra' }, { key: 'officer', label: 'Officer' }, { key: 'appointment', label: 'Appointment' },
         { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> },
@@ -25,7 +26,7 @@ export function CertificatesAdmin() {
     toast(`Certificate ${a === 'issue' ? 'issued with unique reference number' : 'rejected'}`, 'success'); setConfirm(null);
   };
   return (
-    <Page title="Certificate Management (LPC)">
+    <Page title="Certificate Management (LPC)" icon={Award} subtitle="Verify, issue and reject LPC certificate applications.">
       <Card><DataTable columns={[
         { key: 'type', label: 'Type' }, { key: 'applicant', label: 'Applicant' }, { key: 'landId', label: 'Land' }, { key: 'ref', label: 'Reference' },
         { key: 'status', label: 'Status', render: (r) => <Badge status={String(r.status)} /> },
@@ -38,7 +39,7 @@ export function CertificatesAdmin() {
 export function ComplaintsAdmin() {
   const toast = useToast(); const [rows, setRows] = useState(d.complaints); const [remark, setRemark] = useState(''); const [selected, setSelected] = useState<typeof d.complaints[number] | null>(null);
   return (
-    <Page title="Complaint & Dispute Management">
+    <Page title="Complaint & Dispute Management" icon={AlertTriangle} subtitle="Assign officers, add remarks and track resolutions.">
       <Card className="mb-4 p-5"><h3 className="mb-3 font-bold tracking-tight text-navy">Land disputes</h3>{d.disputes.map((x) => <p key={x.id} className="text-sm">{x.caseNo} — {x.parties} · Land {x.landId} · <Badge status={x.status} /></p>)}</Card>
       <Card><DataTable columns={[
         { key: 'subject', label: 'Subject' }, { key: 'citizen', label: 'Citizen' }, { key: 'officer', label: 'Officer' },
@@ -61,8 +62,8 @@ export function UsersAdmin() {
   const [form, setForm] = useState({ name: '', email: '', role: 'RevenueEmployee', district: 'Patna' });
   const setF = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
   return (
-    <Page title="User & Employee Management">
-      <Button className="mb-4" onClick={() => setShow(true)}>Create employee account</Button>
+    <Page title="User & Employee Management" icon={Users} subtitle="Government employee accounts, roles and status.">
+      <Button className="mb-4" onClick={() => setShow(true)}><Plus size={16} aria-hidden="true" />Create employee account</Button>
       <Card><DataTable columns={[
         { key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'role', label: 'Role' }, { key: 'district', label: 'District' },
         { key: 'active', label: 'Status', render: (r) => <Badge status={r.active ? 'Approved' : 'Rejected'} /> },
@@ -83,7 +84,7 @@ export function UsersAdmin() {
 }
 export function MastersAdmin() {
   return (
-    <Page title="Masters — Districts, Circles, Blocks & Villages">
+    <Page title="Masters — Districts, Circles, Blocks & Villages" icon={Database} subtitle="Reference data for districts, circles, mauzas and villages.">
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Districts</h3>{d.masters.districts.map((x) => <p key={x} className="border-b py-1 text-sm">{x}</p>)}</Card>
         <Card className="p-5 transition-all duration-300 hover:shadow-soft"><h3 className="mb-3 font-bold tracking-tight text-navy">Circles</h3>{Object.entries(d.masters.circles).map(([k, v]) => <p key={k} className="border-b py-1 text-sm">{k}: {(v as string[]).join(', ')}</p>)}</Card>
@@ -102,10 +103,10 @@ export function ReportsAdmin() {
     try { await api.exportReport(kind, format); toast(`Export started: ${kind}.${format}`, 'success'); } catch (e) { setErr((e as Error).message); }
   };
   return (
-    <Page title="Reports & Analytics">
+    <Page title="Reports & Analytics" icon={BarChart3} subtitle="District, revenue, mutation, ownership, survey and employee reports.">
       {err && <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{err}</div>}
       <div className="grid gap-4 md:grid-cols-2">{kinds.map(([k, label]) => (
-        <Card key={k} className="flex flex-wrap items-center justify-between gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"><p className="font-semibold">{label}</p><span className="flex gap-2"><Button variant="secondary" onClick={() => run(k, 'pdf')}>Export PDF</Button><Button variant="secondary" onClick={() => run(k, 'xlsx')}>Export Excel</Button></span></Card>
+        <Card key={k} className="flex flex-wrap items-center justify-between gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"><p className="font-semibold">{label}</p><span className="flex gap-2"><Button variant="secondary" onClick={() => run(k, 'pdf')}><Download size={16} aria-hidden="true" />Export PDF</Button><Button variant="secondary" onClick={() => run(k, 'xlsx')}><Download size={16} aria-hidden="true" />Export Excel</Button></span></Card>
       ))}</div>
       <p className="mt-4 text-sm text-slate-500">Exports call /api/reports/&lt;kind&gt;?format=pdf|xlsx. If the API is offline, exports fail gracefully with the message above and no fake file is produced. Total revenue (demo): {fmtINR(d.adminStats.revenueCollected)}.</p>
     </Page>
@@ -113,7 +114,7 @@ export function ReportsAdmin() {
 }
 export function AuditLogsAdmin() {
   return (
-    <Page title="Audit Logs">
+    <Page title="Audit Logs" icon={ScrollText} subtitle="Every admin action, logged with user, target and time.">
       <Card><DataTable columns={[
         { key: 'user', label: 'User' }, { key: 'action', label: 'Action' }, { key: 'target', label: 'Target' }, { key: 'date', label: 'Date & time' },
       ]} rows={d.auditLogs as never[]} /></Card>

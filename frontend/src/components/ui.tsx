@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
+import { Database, FileCheck, Lock, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { EmptyArt } from './illustrations';
 
 // Toasts
 type Toast = { id: number; msg: string; kind: 'success' | 'error' | 'info' };
@@ -22,6 +24,41 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     </ToastCtx.Provider>
   );
 }
+// Icon-led page header (presentation only): icon tile + title + optional subtitle.
+export function PageHeader({ icon: Icon, title, subtitle }: { icon?: LucideIcon; title: string; subtitle?: string }) {
+  return (
+    <div className="mb-6 flex items-start gap-3.5">
+      {Icon && (
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy via-navy-700 to-teal-600 text-white shadow-soft ring-1 ring-white/40">
+          <Icon size={22} aria-hidden="true" />
+        </span>
+      )}
+      <div className="min-w-0">
+        <h1 className="text-2xl font-bold tracking-tight text-navy md:text-[1.75rem]">{title}</h1>
+        {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+// Honest trust strip: every claim is true of this app as built. No official
+// seals, no government branding, no invented ratings or statistics.
+export function TrustStrip() {
+  const items: { icon: LucideIcon; label: string }[] = [
+    { icon: ShieldCheck, label: 'Secure login' },
+    { icon: Lock, label: 'JWT-protected sessions' },
+    { icon: Database, label: 'Role-based access' },
+    { icon: FileCheck, label: 'Audit-logged actions' },
+  ];
+  return (
+    <div className="mb-5 flex flex-wrap items-center gap-2" aria-label="Trust signals">
+      {items.map(({ icon: Icon, label }) => (
+        <span key={label} className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold text-navy shadow-sm ring-1 ring-inset ring-slate-200">
+          <Icon size={14} className="text-teal-600" aria-hidden="true" />{label}
+        </span>
+      ))}
+    </div>
+  );
+}
 export function Button({ children, variant = 'primary', ...p }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }) {
   const cls = variant === 'primary' ? 'bg-gradient-to-r from-navy to-navy-700 text-white shadow-soft hover:shadow-lift hover:brightness-110 active:scale-[0.98]' : variant === 'danger' ? 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-soft hover:shadow-lift hover:brightness-110 active:scale-[0.98]' : variant === 'ghost' ? 'text-slate-700 hover:bg-teal-50 hover:text-navy active:scale-[0.98]' : 'bg-white/90 border border-slate-200 text-slate-800 shadow-sm hover:border-teal-300 hover:bg-teal-50/50 hover:text-navy active:scale-[0.98]';
   return <button {...p} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 disabled:opacity-50 disabled:active:scale-100 ${cls} ${p.className || ''}`} />;
@@ -38,7 +75,7 @@ export function Badge({ status }: { status: string }) {
   return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset transition-colors duration-200 ${map[status] || 'bg-slate-100 text-slate-700 ring-slate-200'}`}><span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />{status}</span>;
 }
 export function Loading() { return <div className="animate-page-in space-y-3 py-6" aria-label="Loading"><div className="skeleton-bar w-2/3" /><div className="skeleton-bar w-full" /><div className="skeleton-bar w-5/6" /><p className="pt-2 text-center text-sm text-slate-500">Loading…</p></div>; }
-export function Empty({ text = 'No records found.' }: { text?: string }) { return <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 px-4 py-10 text-center text-sm text-slate-500">{text}</div>; }
+export function Empty({ text = 'No records found.' }: { text?: string }) { return <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 px-4 py-8 text-center text-sm text-slate-500"><EmptyArt className="mx-auto mb-3 h-20 w-auto opacity-90" /><p>{text}</p></div>; }
 export function ErrorBox({ msg, retry }: { msg: string; retry?: () => void }) {
   return <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">{msg} {retry && <button className="ml-2 font-semibold underline transition-colors duration-200 hover:text-red-900" onClick={retry}>Retry</button>}</div>;
 }
