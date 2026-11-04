@@ -46,6 +46,15 @@
 ::-webkit-scrollbar-thumb { background: rgba(11, 36, 71, 0.25); border-radius: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
+/* LandArt animation: bobbing map pins, pulsing halos, flowing route dashes. */
+.land-pin { animation: landPin 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.land-pulse { animation: landPulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.land-route { animation: landDash 1.6s linear infinite; }
+@keyframes landPin { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes landPulse { 0%, 100% { opacity: 0.25; transform: scale(1); } 50% { opacity: 0.55; transform: scale(1.12); } }
+@keyframes landDash { to { stroke-dashoffset: -20; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .land-pin, .land-pulse, .land-route { animation: none !important; }
 }

@@ -61,7 +61,10 @@ export function TrustStrip() {
 }
 export function Button({ children, variant = 'primary', ...p }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }) {
   const cls = variant === 'primary' ? 'bg-gradient-to-r from-navy to-navy-700 text-white shadow-soft hover:shadow-lift hover:brightness-110 active:scale-[0.98]' : variant === 'danger' ? 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-soft hover:shadow-lift hover:brightness-110 active:scale-[0.98]' : variant === 'ghost' ? 'text-slate-700 hover:bg-teal-50 hover:text-navy active:scale-[0.98]' : 'bg-white/90 border border-slate-200 text-slate-800 shadow-sm hover:border-teal-300 hover:bg-teal-50/50 hover:text-navy active:scale-[0.98]';
-  return <button {...p} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 disabled:opacity-50 disabled:active:scale-100 ${cls} ${p.className || ''}`} />;
+  // BUG FIX 2026-11-04: this button was self-closing, so `children` (every
+  // label and icon, e.g. "Sign in") was dropped and all buttons rendered as
+  // empty coloured bars. Children are now rendered inside the button.
+  return <button {...p} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 disabled:opacity-50 disabled:active:scale-100 ${cls} ${p.className || ''}`}>{children}</button>;
 }
 export function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return <div className={`glass-card rounded-2xl transition-shadow duration-300 ${className}`}>{children}</div>;
