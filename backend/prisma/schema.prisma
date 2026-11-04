@@ -1,0 +1,433 @@
+// LRMS Prisma schema — PostgreSQL.
+// Independent demo inspired by Bihar land administration concepts.
+// NOT an official Bihar Government system. All seed data is fictional.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  fullName     String
+  mobile       String
+  email        String    @unique
+  passwordHash String
+  address      String?
+  role         String    @default("Citizen")
+  isActive     Boolean   @default(true)
+  otpVerified  Boolean   @default(false)
+  district     String?
+  circle       String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  createdBy    String?
+  updatedBy    String?
+  refreshTokens RefreshToken[]
+  userRoles    UserRole[]
+  ownedRecords LandRecord[] @relation("RecordOwnerUser")
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  createdBy   String?
+  updatedBy   String?
+  userRoles   UserRole[]
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  roleId    Int
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+  @@unique([userId, roleId])
+}
+
+model District {
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+  circles   Circle[]
+}
+
+model Circle {
+  id         Int      @id @default(autoincrement())
+  name       String
+  districtId Int
+  district   District @relation(fields: [districtId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
+  mauzas     Mauza[]
+}
+
+model Mauza {
+  id        Int      @id @default(autoincrement())
+  name      String
+  circleId  Int
+  circle    Circle   @relation(fields: [circleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+  villages  Village[]
+}
+
+model Village {
+  id        Int      @id @default(autoincrement())
+  name      String
+  mauzaId   Int
+  mauza     Mauza    @relation(fields: [mauzaId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+}
+
+model LandOwner {
+  id         Int          @id @default(autoincrement())
+  fullName   String
+  fatherName String?
+  mobile     String?
+  address    String?
+  userId     Int?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  createdBy  String?
+  updatedBy  String?
+  records    LandRecord[]
+}
+
+model LandRecord {
+  id                  Int       @id @default(autoincrement())
+  khataNumber         String
+  khesraNumber        String
+  plotNumber          String
+  mauza               String
+  village             String
+  circle              String
+  district            String
+  areaInDecimal       Decimal   @db.Decimal(18, 2)
+  landClassification  String    @default("Agricultural")
+  ownerId             Int
+  owner               LandOwner @relation(fields: [ownerId], references: [id])
+  ownerUserId         Int?
+  ownerUser           User?     @relation("RecordOwnerUser", fields: [ownerUserId], references: [id])
+  status              String    @default("Active")
+  latitude            Float?
+  longitude           Float?
+  remarks             String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  createdBy           String?
+  updatedBy           String?
+  history             LandOwnershipHistory[]
+  jamabandi           JamabandiRecord[]
+  mutations           MutationApplication[]
+  payments            RevenuePayment[]
+  surveys             SurveyRequest[]
+  certificates        CertificateApplication[]
+  complaints          Complaint[]
+  disputes            LandDispute[]
+  @@index([district, circle, khataNumber])
+  @@index([khesraNumber])
+  @@index([ownerUserId])
+}
+
+model LandOwnershipHistory {
+  id                   Int       @id @default(autoincrement())
+  landRecordId         Int
+  landRecord           LandRecord @relation(fields: [landRecordId], references: [id])
+  fromOwnerId          Int?
+  toOwnerId            Int?
+  fromOwnerName        String    @default("")
+  toOwnerName          String
+  transferType         String    @default("Mutation")
+  mutationApplicationId Int?
+  transferDate         DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  createdBy            String?
+  updatedBy            String?
+}
+
+model JamabandiRecord {
+  id              Int        @id @default(autoincrement())
+  landRecordId    Int
+  landRecord      LandRecord @relation(fields: [landRecordId], references: [id])
+  jamabandiNumber String
+  ownerName       String
+  khataNumber     String     @default("")
+  khesraNumber    String     @default("")
+  areaInDecimal   Decimal    @db.Decimal(18, 2)
+  classification  String     @default("Agricultural")
+  isCurrent       Boolean    @default(true)
+  remarks         String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  createdBy       String?
+  updatedBy       String?
+  @@index([landRecordId, isCurrent])
+}
+
+model MutationApplication {
+  id                  Int       @id @default(autoincrement())
+  trackingNumber      String    @unique
+  landRecordId        Int
+  landRecord          LandRecord @relation(fields: [landRecordId], references: [id])
+  applicantUserId     Int
+  sellerName          String
+  buyerName           String
+  sellerMobile        String?
+  buyerMobile         String?
+  mutationType        String    @default("Sale")
+  status              String    @default("Pending")
+  assignedToUserId    Int?
+  remarks             String?
+  rejectionReason     String?
+  documentRequestNote String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  createdBy           String?
+  updatedBy           String?
+  documents           MutationDocument[]
+  @@index([status])
+}
+
+model MutationDocument {
+  id                   Int                 @id @default(autoincrement())
+  mutationApplicationId Int
+  mutation             MutationApplication @relation(fields: [mutationApplicationId], references: [id])
+  fileName             String
+  filePath             String
+  documentType         String              @default("General")
+  contentType          String              @default("")
+  fileSize             Int                 @default(0)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  createdBy            String?
+  updatedBy            String?
+}
+
+model RevenueRate {
+  id                 Int      @id @default(autoincrement())
+  district           String
+  landClassification String
+  ratePerDecimal     Decimal  @db.Decimal(18, 2)
+  effectiveFrom      DateTime @default(now())
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  createdBy          String?
+  updatedBy          String?
+}
+
+model RevenuePayment {
+  id                Int        @id @default(autoincrement())
+  landRecordId      Int
+  landRecord        LandRecord @relation(fields: [landRecordId], references: [id])
+  userId            Int
+  amount            Decimal    @db.Decimal(18, 2)
+  financialYear     String
+  status            String     @default("Unpaid")
+  paymentMethod     String?
+  transactionId     String?
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  receiptNumber     String?
+  paidAt            DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  createdBy         String?
+  updatedBy         String?
+  @@index([status])
+}
+
+model SurveyRequest {
+  id                Int       @id @default(autoincrement())
+  landRecordId      Int
+  landRecord        LandRecord @relation(fields: [landRecordId], references: [id])
+  requestedByUserId Int
+  surveyType        String    @default("Measurement")
+  status            String    @default("Pending")
+  preferredDate     DateTime?
+  remarks           String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  createdBy         String?
+  updatedBy         String?
+  assignments       SurveyAssignment[]
+  reports           SurveyReport[]
+}
+
+model SurveyAssignment {
+  id              Int           @id @default(autoincrement())
+  surveyRequestId Int
+  surveyRequest   SurveyRequest @relation(fields: [surveyRequestId], references: [id])
+  aminUserId      Int
+  appointmentDate DateTime?
+  status          String        @default("Assigned")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  createdBy       String?
+  updatedBy       String?
+}
+
+model SurveyReport {
+  id              Int           @id @default(autoincrement())
+  surveyRequestId Int
+  surveyRequest   SurveyRequest @relation(fields: [surveyRequestId], references: [id])
+  measuredArea    Decimal       @db.Decimal(18, 2)
+  surveyorNotes   String?
+  mapFilePath     String?
+  reportDate      DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  createdBy       String?
+  updatedBy       String?
+}
+
+model CertificateApplication {
+  id               Int        @id @default(autoincrement())
+  userId           Int
+  landRecordId     Int
+  landRecord       LandRecord @relation(fields: [landRecordId], references: [id])
+  certificateType  String     @default("LPC")
+  status           String     @default("Pending")
+  purpose          String?
+  assignedToUserId Int?
+  remarks          String?
+  rejectionReason  String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  createdBy        String?
+  updatedBy        String?
+  certificates     Certificate[]
+}
+
+model Certificate {
+  id                      Int                  @id @default(autoincrement())
+  certificateApplicationId Int
+  application             CertificateApplication @relation(fields: [certificateApplicationId], references: [id])
+  referenceNumber         String               @unique
+  issuedTo                String
+  landRecordId            Int
+  issuedAt                DateTime             @default(now())
+  issuedByUserId          Int?
+  validUntil              DateTime?
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+  createdBy               String?
+  updatedBy               String?
+}
+
+model Complaint {
+  id               Int        @id @default(autoincrement())
+  userId           Int
+  landRecordId     Int?
+  landRecord       LandRecord? @relation(fields: [landRecordId], references: [id])
+  title            String
+  description      String
+  category         String     @default("General")
+  status           String     @default("Pending")
+  assignedToUserId Int?
+  evidenceFilePath String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  createdBy        String?
+  updatedBy        String?
+  remarks          ComplaintRemark[]
+}
+
+model ComplaintRemark {
+  id           Int       @id @default(autoincrement())
+  complaintId  Int
+  complaint    Complaint @relation(fields: [complaintId], references: [id])
+  remark       String
+  authorUserId Int?
+  authorRole   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  createdBy    String?
+  updatedBy    String?
+}
+
+model LandDispute {
+  id               Int        @id @default(autoincrement())
+  landRecordId     Int
+  landRecord       LandRecord @relation(fields: [landRecordId], references: [id])
+  title            String
+  description      String
+  status           String     @default("InProgress")
+  parties          String?
+  assignedToUserId Int?
+  resolutionNotes  String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  createdBy        String?
+  updatedBy        String?
+}
+
+model Notification {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  title         String
+  message       String
+  type          String   @default("Info")
+  isRead        Boolean  @default(false)
+  relatedEntity String?
+  relatedId     Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  userEmail String?
+  action    String
+  entity    String   @default("")
+  entityId  Int?
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id                  Int       @id @default(autoincrement())
+  userId              Int
+  user                User      @relation(fields: [userId], references: [id])
+  tokenHash           String
+  expiresAt           DateTime
+  revokedAt           DateTime?
+  replacedByTokenHash String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  @@index([tokenHash])
+}
